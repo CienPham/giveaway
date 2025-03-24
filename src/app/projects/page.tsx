@@ -1,9 +1,37 @@
+'use client';
+
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-import Navbar from "../../components/Navbar";
+import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-export default function DuAn() {
+import { useProjects } from '@/hooks/useProjects';
+import LoadingSpinner from '@/components/LoadingSpinner';
+
+// Định nghĩa interface cho Project
+interface Project {
+  id: string;
+  title: string;
+  description: string;
+  currentAmount: number;
+  targetAmount: number;
+  image: string;
+}
+
+export default function ProjectsPage() {
+  const { projects, loading, error } = useProjects();
+
+  if (loading) return <LoadingSpinner />;
+  if (error) return (
+    <>
+      <Navbar />
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-600">Error: {error}</p>
+      </div>
+      <Footer />
+    </>
+  );
+
   return (
     <>
       <Navbar />
@@ -12,11 +40,11 @@ export default function DuAn() {
         <div className="relative bg-gray-900 h-64">
           <div className="absolute inset-0 overflow-hidden">
             <Image
-              src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c"
+              src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c" // Move image to public folder
               alt="Hero background"
-              layout="fill"
-              objectFit="cover"
-              className="opacity-50"
+              fill
+              className="object-cover opacity-50"
+              priority
             />
           </div>
           <div className="relative container mx-auto px-4 h-full flex flex-col justify-center items-center text-center">
@@ -25,48 +53,25 @@ export default function DuAn() {
           </div>
         </div>
 
-        {/* Tabs */}
-        <div className="container mx-auto px-4 -mt-8">
-          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-            <div className="flex justify-center space-x-8 mb-8">
-              <button className="px-6 py-3 text-lg font-medium border-b-2 border-green-600 text-green-600">
-                🕒 Dự án đang gây quỹ
-              </button>
-              <button className="px-6 py-3 text-lg font-medium text-gray-500 hover:text-gray-700">
-                ✅ Dự án đã hoàn thành
-              </button>
-            </div>
-
-            {/* Dự án đang gây quỹ */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {/* Projects Section */}
+        <div className="container mx-auto px-4 py-8">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {projects.map((project: Project) => (
               <ProjectCard
-                title="Bông Đọt Chỉ Lần Thứ 18"
-                description="Chương trình hỗ trợ trẻ em nghèo vùng cao..."
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKnztg682JnegzGmHiCEJ4AXvBTWgi01w4sQ&s"
-                progress={13.75}
-                raised={2750000}
-                goal={20000000}
+                key={project.id}
+                title={project.title}
+                description={project.description}
+                image={project.image}
+                progress={(project.currentAmount / project.targetAmount) * 100}
+                raised={project.currentAmount}
+                goal={project.targetAmount}
               />
-              <ProjectCard
-                title="Xây Cầu Dân Sinh Tại Trà Vinh"
-                description="Hỗ trợ xây dựng cầu dân sinh..."
-                image="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSKnztg682JnegzGmHiCEJ4AXvBTWgi01w4sQ&s"
-                progress={56.25}
-                raised={45000000}
-                goal={80000000}
-              />
-            </div>
+            ))}
           </div>
         </div>
-
-        {/* Floating Button */}
-        <button className="fixed bottom-8 right-8 bg-green-600 text-white p-4 rounded-full shadow-lg hover:bg-green-700 transition">
-          💬
-        </button>
       </div>
       <Footer />
     </>
-    
   );
 }
 
@@ -113,6 +118,5 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ title, description, image, pr
         </div>
       </div>
     </div>
-    
   );
 };
