@@ -1,4 +1,5 @@
 import React from "react";
+import Link from 'next/link';
 
 const Navbar: React.FC = () => {
   return (
@@ -11,13 +12,13 @@ const Navbar: React.FC = () => {
 
         {/* Menu chính */}
         <div className="hidden md:flex space-x-6">
-          <a href="http://localhost:3003/about" className="hover:text-pink-500 transition-colors">
+          <Link href="/" className="hover:text-pink-500 transition-colors">
             <i className="fas fa-home mr-1"></i>Trang chủ
-          </a>
-          <a href="#" className="hover:text-pink-500 transition-colors">
+          </Link>
+          <Link href="/projects" className="hover:text-pink-500 transition-colors">
             <i className="fas fa-project-diagram mr-1"></i>Dự án
-          </a>
-          <a href="#" className="hover:text-pink-500 transition-colors">
+          </Link>
+          <a href="/about" className="hover:text-pink-500 transition-colors">
             <i className="fas fa-info-circle mr-1"></i>Về chúng tôi
           </a>
           <a href="#" className="hover:text-pink-500 transition-colors">
